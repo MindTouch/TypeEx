@@ -86,25 +86,18 @@ StringEx::stringify(true); // 'true'
 StringEx::stringify(false); // 'false'
 StringEx::stringify(123); // '123'
 
-// array values are serialized to JSON by default...
-StringEx::stringify(['foo', 'bar']); // ["foo","bar"]
-StringEx::stringify(['foo', 'plugh', 'bar' => ['baz']]); // ["foo","plugh","bar": {"baz"}]
+// array values are serialized to comma separated lists by default
+StringEx::stringify(['foo', 'bar']); // 'foo,bar'
+StringEx::stringify(['foo', 'plugh', 'bar' => ['baz']]); // 'foo,plugh,baz'
 
 // ...however a custom serializer can apply any collection serialization
-StringEx::setSerializer(function($value) {
-
-    // how about a comma separated list?
-    return implode(',', array_map(function($v) : string {
-        return StringEx::stringify($v);
-    }, $value));
-});
 StringEx::stringify(['foo', 'bar'], function($value) {
 
-    // how about a comma separated list?
+    // how about JSON?
     return implode(',', array_map(function($v) : string {
         return StringEx::stringify($v);
     }, $value));
-}); // foo,bar
+}); // '["foo","bar"]'
 
 // a default custom serializer can also be set for all subsequent stringify operations
 class MyClass {
@@ -115,8 +108,8 @@ class MyClass {
 StringEx::setDefaultSerializer(function($value) {
     return $value instanceof MyClass ? $value->toString() : 'xyzzy';
 });
-StringEx::stringify(new MyClass()); // foo
-StringEx::stringify(['foo', 'bar']); // xyzzy
+StringEx::stringify(new MyClass()); // 'foo'
+StringEx::stringify(['foo', 'bar']); // 'xyzzy'
 
 // more complex collection serialization strategies can also be implemented
 StringEx::setDefaultSerializer(function($value) : string {
@@ -164,14 +157,17 @@ ExtendedCustomStringEx::setDefaultSerializer(function() {
 StringEx::stringify(function() { return 'foo'; }); // 'foo'
 StringEx::stringify(function() { return 123; }); // '123'
 StringEx::stringify(function() { return ['foo', 'bar']; }); // 'foo,bar'
-StringEx::stringify(function() { return ['foo', 'plugh', 'bar' => ['baz']]; }); // ["foo","plugh","bar": {"baz"}]
+StringEx::stringify(function() { return ['foo', 'plugh', 'bar' => ['baz']]; }); // 'foo,plugh,baz'
 
 // objects, as expected, have __toString called (even objects returned from anonymous functions)
 StringEx::stringify(function() { return new class { function __toString() : string { return 'xyzzy'; }}; }); // 'xyzzy'
 StringEx::stringify(new class { function __toString() : string { return 'qux'; }}); // 'qux'
 
-// if an object does not have a __toString method, the object is serialized to JSON or the output of the custom/default serializer
-StringEx::stringify(new class { public $foo = ['baz', 'qux']; }); // {"foo": ["baz", "qux"]}
+// if an object does not have a __toString method, the object is serialized with native PHP serialization or the output of the custom/default serializer
+class Bar {
+    public $foo = ['baz', 'qux'];
+}
+StringEx::stringify(new Bar()); // 'O:3:"Bar":1:{s:3:"foo";a:2:{i:0;s:3:"baz";i:1;s:3:"qux";}}'
 
 // check if a string contains a sub-string value
 (new StringEx('foo bar'))->contains('foo'); // true

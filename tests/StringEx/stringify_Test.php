@@ -19,6 +19,10 @@ namespace modethirteen\TypeEx\Tests\StringEx;
 use modethirteen\TypeEx\StringEx;
 use PHPUnit\Framework\TestCase;
 
+class Bar {
+    public $foo = ['baz', 'qux'];
+}
+
 class stringify_Test extends TestCase {
 
     /**
@@ -39,7 +43,8 @@ class stringify_Test extends TestCase {
             [function() { return new class { function __toString() : string { return 'xyzzy'; }}; }, 'xyzzy'],
             [123, '123'],
             [new class { function __toString() : string { return 'qux'; }}, 'qux'],
-            [(object)['foo' => 'bar', 'baz' => 'qux'], 'O:8:"stdClass":2:{s:3:"foo";s:3:"bar";s:3:"baz";s:3:"qux";}']
+            [(object)['foo' => 'bar', 'baz' => 'qux'], 'O:8:"stdClass":2:{s:3:"foo";s:3:"bar";s:3:"baz";s:3:"qux";}'],
+            [new Bar(), 'O:38:"modethirteen\TypeEx\Tests\StringEx\Bar":1:{s:3:"foo";a:2:{i:0;s:3:"baz";i:1;s:3:"qux";}}']
         ];
     }
 
