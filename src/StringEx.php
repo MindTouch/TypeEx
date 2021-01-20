@@ -24,7 +24,7 @@ class StringEx {
     /**
      * @var Closure|null
      */
-    protected static $serializer;
+    protected static $serializer = null;
 
     /**
      * @param string|null $string
