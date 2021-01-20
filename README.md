@@ -94,9 +94,7 @@ StringEx::stringify(['foo', 'plugh', 'bar' => ['baz']]); // 'foo,plugh,baz'
 StringEx::stringify(['foo', 'bar'], function($value) {
 
     // how about JSON?
-    return implode(',', array_map(function($v) : string {
-        return StringEx::stringify($v);
-    }, $value));
+    return json_encode($value);
 }); // '["foo","bar"]'
 
 // a default custom serializer can also be set for all subsequent stringify operations
