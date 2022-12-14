@@ -21,9 +21,6 @@ use PHPUnit\Framework\TestCase;
 
 class removePrefix_Test extends TestCase {
 
-    /**
-     * @return array
-     */
     public static function string_prefix_expected_Provider() : array {
         return [
             ['foo', 'foo', ''],
@@ -37,9 +34,6 @@ class removePrefix_Test extends TestCase {
     /**
      * @dataProvider string_prefix_expected_Provider
      * @test
-     * @param string $string
-     * @param string $prefix
-     * @param string $expected
      */
     public function Can_remove_prefix(string $string, string $prefix, string $expected) : void {
 

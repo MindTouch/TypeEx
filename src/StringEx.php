@@ -19,17 +19,13 @@ namespace modethirteen\TypeEx;
 use Closure;
 use modethirteen\TypeEx\Exception\StringExCannotDecodeBase64StringException;
 
-class StringEx {
+class StringEx implements \Stringable {
 
     /**
      * @var Closure|null
      */
     protected static ?Closure $serializer = null;
 
-    /**
-     * @param string|null $string
-     * @return bool
-     */
     public static function isNullOrEmpty(?string $string) : bool {
         return $string === null || $string === '';
     }
@@ -53,11 +49,9 @@ class StringEx {
     /**
      * Convert any value to string
      *
-     * @param mixed $value
      * @param Closure|null $serializer - <$serializer($value) : string> : custom stringify for collections (objects and arrays)
-     * @return string
      */
-    public static function stringify($value, ?Closure $serializer = null): string {
+    public static function stringify(mixed $value, ?Closure $serializer = null): string {
         if($value === null) {
             return '';
         }
@@ -83,16 +77,12 @@ class StringEx {
 
     /**
      * The default serializer converts arrays into comma separated lists, and objects into native-serialized objects
-     *
-     * @return Closure
      */
     private static function getDefaultSerializer() : Closure {
         if(static::$serializer === null) {
             static::$serializer = function($value) : string {
                 if(is_array($value)) {
-                    return implode(',', array_map(function($v) : string {
-                        return static::stringify($v);
-                    }, $value));
+                    return implode(',', array_map(fn($v): string => static::stringify($v), $value));
                 }
                 return serialize($value);
             };
@@ -100,37 +90,19 @@ class StringEx {
         return static::$serializer;
     }
 
-    /**
-     * @param string $haystack
-     * @param string $needle
-     * @return bool
-     */
     private static function endsWithHelper(string $haystack, string $needle) : bool {
         $length = strlen($needle);
         $start = $length * -1;
         return (substr($haystack, $start) === $needle);
     }
 
-    /**
-     * @param string $haystack
-     * @param string $needle
-     * @return bool
-     */
     private static function startsWithHelper(string $haystack, string $needle) : bool {
         $length = strlen($needle);
         return (substr($haystack, 0, $length) === $needle);
     }
 
-    /**
-     * @var string
-     */
-    private string $string;
-
-    /**
-     * @param string $string
-     */
-    final public function __construct(string $string) {
-        $this->string = $string;
+    final public function __construct(private readonly string $string)
+    {
     }
 
     /**
@@ -143,9 +115,8 @@ class StringEx {
     /**
      * @note when comparing a string array, returns true if one or more values match
      * @param string|string[] $needle
-     * @return bool
      */
-    public function contains($needle) : bool {
+    public function contains(string|array $needle) : bool {
         if(is_array($needle)) {
             foreach($needle as $n) {
                 $pos = strpos($this->string, self::stringify($n));
@@ -155,11 +126,10 @@ class StringEx {
             }
             return false;
         }
-        return strpos($this->string, self::stringify($needle)) !== false;
+        return str_contains($this->string, self::stringify($needle));
     }
 
     /**
-     * @param int $max
      * @return static
      */
     public function ellipsis(int $max = 100) : object {
@@ -168,7 +138,7 @@ class StringEx {
             return new static($string);
         }
         $result = substr($string, 0, $max);
-        $string = (strpos($string, ' ') === false)
+        $string = (!str_contains($string, ' '))
             ? $result . '…'
             : preg_replace('/\w+$/', '', $result) . '…';
         return new static($string);
@@ -181,19 +151,11 @@ class StringEx {
         return new static(base64_encode($this->string));
     }
 
-    /**
-     * @param string $needle
-     * @return bool
-     */
     public function endsWith(string $needle) : bool {
         return self::endsWithHelper($this->string, $needle);
     }
 
-     /**
-     * @param string $needle
-     * @return bool
-     */
-    public function endsWithInvariantCase(string $needle) : bool {
+     public function endsWithInvariantCase(string $needle) : bool {
         return self::endsWithHelper(strtolower($this->string), strtolower($needle));
     }
 
@@ -212,9 +174,6 @@ class StringEx {
 
     /**
      * Case sensitive string comparison
-     *
-     * @param string $string
-     * @return bool
      */
     public function equals(string $string) : bool {
         return $this->string === $string;
@@ -222,22 +181,18 @@ class StringEx {
 
     /**
      * Case insensitive string comparison
-     *
-     * @param string $string
-     * @return bool
      */
     public function equalsInvariantCase(string $string) : bool {
         return strtolower($this->string) === strtolower($string);
     }
 
     /**
-     * @param string $prefix
      * @return static
      */
     public function removePrefix(string $prefix) : object {
         $string = $this->string;
         return new static(
-            (substr($string, 0, strlen($prefix)) === $prefix)
+            (str_starts_with($string, $prefix))
                 ? substr($string, strlen($prefix), strlen($string))
                 : $string
         );
@@ -256,7 +211,7 @@ class StringEx {
         }
         $variables = [];
         foreach($replacements as $variable => $value) {
-            $variables['{{' . trim($variable) . '}}'] = $value;
+            $variables['{{' . trim((string) $variable) . '}}'] = $value;
         }
         return new static(strtr($string, $variables));
     }
@@ -280,25 +235,14 @@ class StringEx {
         return new static(trim($this->string));
     }
 
-    /**
-     * @return string
-     */
     public function toString() : string {
         return $this->string;
     }
 
-    /**
-     * @param string $needle
-     * @return bool
-     */
     public function startsWith(string $needle) : bool {
         return self::startsWithHelper($this->string, $needle);
     }
 
-    /**
-     * @param string $needle
-     * @return bool
-     */
     public function startsWithInvariantCase(string $needle) : bool {
         return self::startsWithHelper(strtolower($this->string), strtolower($needle));
     }

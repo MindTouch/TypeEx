@@ -21,9 +21,6 @@ use PHPUnit\Framework\TestCase;
 
 class contains_Test extends TestCase  {
 
-    /**
-     * @return array
-     */
     public static function string_value_expected_Provider() : array {
         return [
             ['foo', 'foo', true],
@@ -47,11 +44,8 @@ class contains_Test extends TestCase  {
     /**
      * @dataProvider string_value_expected_Provider
      * @test
-     * @param string $string
-     * @param mixed $value
-     * @param bool $expected
      */
-    public function String_contains(string $string, $value, bool $expected) : void {
+    public function String_contains(string $string, mixed $value, bool $expected) : void {
 
         // act
         $result = (new StringEx($string))->contains($value);

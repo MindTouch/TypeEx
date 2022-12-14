@@ -22,9 +22,6 @@ use PHPUnit\Framework\TestCase;
 
 class StringDictionary_Test extends TestCase  {
 
-    /**
-     * @return array
-     */
     public static function values_Provider() : array {
         return [
             [['foo' => 'bar']],
@@ -67,8 +64,6 @@ class StringDictionary_Test extends TestCase  {
             self::assertEquals($value, $values[$key]);
         }
         static::assertEquals($keys, $result->getKeys());
-        static::assertEquals(array_filter($values, function($value) {
-            return $value !== null;
-        }), $result->toArray());
+        static::assertEquals(array_filter($values, fn($value) => $value !== null), $result->toArray());
     }
 }

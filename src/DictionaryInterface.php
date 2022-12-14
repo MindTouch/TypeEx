@@ -21,7 +21,6 @@ use Iterator;
 interface DictionaryInterface extends Iterator {
 
     /**
-     * @param string $key
      * @return mixed|null
      */
     function get(string $key);

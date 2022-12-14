@@ -21,9 +21,6 @@ use PHPUnit\Framework\TestCase;
 
 class ellipsis_Test extends TestCase {
 
-    /**
-     * @return array
-     */
     public static function string_length_expected_Provider() : array {
         return [
             ['Pat ordered a ghost pepper pie', 200, 'Pat ordered a ghost pepper pie'],
@@ -43,9 +40,6 @@ class ellipsis_Test extends TestCase {
     /**
      * @dataProvider string_length_expected_Provider
      * @test
-     * @param string $string
-     * @param int|null $length
-     * @param string $expected
      */
     public function Can_shorten(string $string, ?int $length, string $expected) : void {
 

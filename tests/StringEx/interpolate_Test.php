@@ -22,9 +22,6 @@ use PHPUnit\Framework\TestCase;
 
 class interpolate_Test extends TestCase {
 
-    /**
-     * @return array
-     */
     public static function template_replacements_expected_Provider() : array {
         return [
             ['{{foo}}', ['foo' => 'bar'], 'bar'],
@@ -40,9 +37,7 @@ class interpolate_Test extends TestCase {
     /**
      * @dataProvider template_replacements_expected_Provider
      * @test
-     * @param string $template
      * @param array<string, string> $replacements
-     * @param string $expected
      */
     public function Can_interpolate(string $template, array $replacements, string $expected) : void {
 
