@@ -15,11 +15,12 @@
   },
   "require": {
     "ext-json": "*",
-    "php": "~7.4.12"
+    "php": "~8.1.12"
   },
   "require-dev": {
-    "phpstan/phpstan": "~0.12.57",
-    "phpunit/phpunit": "~9.4.3"
+    "phpstan/phpstan": "^1.9.3",
+    "phpunit/phpunit": "~9.4.3",
+    "rector/rector": "^0.15.1"
   },
   "autoload": {
     "psr-4": {
