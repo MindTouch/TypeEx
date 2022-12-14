@@ -21,9 +21,6 @@ use PHPUnit\Framework\TestCase;
 
 class boolify_Test extends TestCase {
 
-    /**
-     * @return array
-     */
     public static function value_expected_Provider() : array {
         return [
             [null, false],
@@ -34,15 +31,15 @@ class boolify_Test extends TestCase {
             [['foo', 'plugh', 'bar' => ['baz']], true],
             [[], false],
             [['foo' => []], true],
-            [function() { return 'foo'; }, false],
-            [function() { return true; }, true],
-            [function() { return false; }, false],
-            [function() { return null; }, false],
-            [function() { return 123; }, true],
-            [function() { return ['foo', 'bar']; }, true],
-            [function() { return ['foo', 'plugh', 'bar' => ['baz']]; }, true],
-            [function() { return new class { function __toString() : string { return 'true'; }}; }, true],
-            [function() { return new class { function __toString() : string { return 'false'; }}; }, false],
+            [fn() => 'foo', false],
+            [fn() => true, true],
+            [fn() => false, false],
+            [fn() => null, false],
+            [fn() => 123, true],
+            [fn() => ['foo', 'bar'], true],
+            [fn() => ['foo', 'plugh', 'bar' => ['baz']], true],
+            [fn() => new class { function __toString() : string { return 'true'; }}, true],
+            [fn() => new class { function __toString() : string { return 'false'; }}, false],
             [123, true],
             ['123', true],
             ['-5', false],
@@ -57,10 +54,8 @@ class boolify_Test extends TestCase {
     /**
      * @dataProvider value_expected_Provider
      * @test
-     * @param mixed $value
-     * @param bool $expected
      */
-    public function Can_boolify($value, bool $expected) : void {
+    public function Can_boolify(mixed $value, bool $expected) : void {
 
         // act
         $result = BoolEx::boolify($value);

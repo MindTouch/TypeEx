@@ -23,11 +23,8 @@ class BoolEx {
 
     /**
      * Convert any value to bool
-     *
-     * @param mixed $value
-     * @return bool
      */
-    public static function boolify($value) : bool {
+    public static function boolify(mixed $value) : bool {
         if($value === null) {
             return false;
         }

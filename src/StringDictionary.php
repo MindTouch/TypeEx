@@ -23,10 +23,7 @@ class StringDictionary implements IStringDictionary {
      */
     private array $data = [];
 
-    /**
-     * @var mixed - current key
-     */
-    private $key;
+    private string|bool|null $key = null;
 
     /**
      * @var string[] - list of keys in the map
@@ -38,7 +35,7 @@ class StringDictionary implements IStringDictionary {
     }
 
     public function get(string $key) : ?string {
-        return isset($this->data[$key]) ? $this->data[$key] : null;
+        return $this->data[$key] ?? null;
     }
 
     public function getKeys() : array {

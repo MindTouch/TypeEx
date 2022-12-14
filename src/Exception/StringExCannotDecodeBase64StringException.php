@@ -21,16 +21,7 @@ use Exception;
 
 class StringExCannotDecodeBase64StringException extends Exception {
 
-    /**
-     * @var string
-     */
-    private $string;
-
-    /**
-     * @param string $string
-     */
-    public function __construct(string $string) {
-        $this->string = $string;
+    public function __construct(private readonly string $string) {
         parent::__construct('Cannot decode base64 encoded string');
     }
 

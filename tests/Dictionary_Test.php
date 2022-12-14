@@ -23,9 +23,6 @@ use PHPUnit\Framework\TestCase;
 
 class Dictionary_Test extends TestCase  {
 
-    /**
-     * @return array
-     */
     public static function values_expected_Provider() : array {
         return [
             [['foo' => 'bar']],
@@ -65,9 +62,7 @@ class Dictionary_Test extends TestCase  {
             self::assertEquals($value, $values[$key]);
         }
         static::assertEquals($keys, $result->getKeys());
-        static::assertEquals(array_filter($values, function($value) {
-            return $value !== null;
-        }), $result->toArray());
+        static::assertEquals(array_filter($values, fn($value) => $value !== null), $result->toArray());
     }
 
     /**
@@ -77,9 +72,7 @@ class Dictionary_Test extends TestCase  {
     public function Can_set_valid_dictionary_value() : void {
 
         // arrange
-        $dictionary = new Dictionary(function($value) : bool {
-            return $value === 'foo';
-        });
+        $dictionary = new Dictionary(fn($value): bool => $value === 'foo');
 
         // act
         $dictionary->set('bar', 'foo');
@@ -96,9 +89,7 @@ class Dictionary_Test extends TestCase  {
 
         // arrange
         static::expectException(InvalidDictionaryValueException::class);
-        $dictionary = new Dictionary(function($value) : bool {
-            return is_int($value);
-        });
+        $dictionary = new Dictionary(fn($value): bool => is_int($value));
 
         // act
         $dictionary->set('bar', 'foo');

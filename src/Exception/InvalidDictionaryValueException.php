@@ -21,17 +21,8 @@ use Exception;
 
 class InvalidDictionaryValueException extends Exception {
 
-    /**
-     * @var mixed
-     */
-    private $value;
-
-    /**
-     * @param mixed $value
-     */
-    public function __construct($value) {
+    public function __construct(private readonly mixed $value) {
         parent::__construct('Dictionary set value failed validation');
-        $this->value = $value;
     }
 
     /**
