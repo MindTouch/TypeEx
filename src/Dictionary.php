@@ -26,10 +26,7 @@ class Dictionary implements IDictionary {
      */
     private array $data = [];
 
-    /**
-     * @var mixed - current key
-     */
-    private $key;
+    private string|bool|null $key = null;
 
     /**
      * @var string[] - list of keys in the map
@@ -56,7 +53,7 @@ class Dictionary implements IDictionary {
     }
 
     public function get(string $key) {
-        return isset($this->data[$key]) ? $this->data[$key] : null;
+        return $this->data[$key] ?? null;
     }
 
     public function getKeys() : array {

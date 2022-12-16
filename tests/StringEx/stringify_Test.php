@@ -25,9 +25,6 @@ class Bar {
 
 class stringify_Test extends TestCase {
 
-    /**
-     * @return array
-     */
     public static function value_expected_Provider() : array {
         return [
             [null, ''],
@@ -36,11 +33,11 @@ class stringify_Test extends TestCase {
             [false, 'false'],
             [['foo', 'bar'], 'foo,bar'],
             [['foo', 'plugh', 'bar' => ['baz']], 'foo,plugh,baz'],
-            [function() { return 'foo'; }, 'foo'],
-            [function() { return 123; }, '123'],
-            [function() { return ['foo', 'bar']; }, 'foo,bar'],
-            [function() { return ['foo', 'plugh', 'bar' => ['baz']]; }, 'foo,plugh,baz'],
-            [function() { return new class { function __toString() : string { return 'xyzzy'; }}; }, 'xyzzy'],
+            [fn() => 'foo', 'foo'],
+            [fn() => 123, '123'],
+            [fn() => ['foo', 'bar'], 'foo,bar'],
+            [fn() => ['foo', 'plugh', 'bar' => ['baz']], 'foo,plugh,baz'],
+            [fn() => new class { function __toString() : string { return 'xyzzy'; }}, 'xyzzy'],
             [123, '123'],
             [new class { function __toString() : string { return 'qux'; }}, 'qux'],
             [(object)['foo' => 'bar', 'baz' => 'qux'], 'O:8:"stdClass":2:{s:3:"foo";s:3:"bar";s:3:"baz";s:3:"qux";}'],
@@ -51,10 +48,8 @@ class stringify_Test extends TestCase {
     /**
      * @dataProvider value_expected_Provider
      * @test
-     * @param mixed $value
-     * @param string $expected
      */
-    public function Can_stringify($value, string $expected) : void {
+    public function Can_stringify(mixed $value, string $expected) : void {
 
         // act
         $result = StringEx::stringify($value);
@@ -91,11 +86,7 @@ class stringify_Test extends TestCase {
         $result = StringEx::stringify(['foo', 'bar', 'baz' => ['a', 'b', 'c']], function($value) : string {
             $xml = '';
             foreach($value as $item) {
-                $item = StringEx::stringify($item, function($value) : string {
-                    return implode(',', array_map(function($v) : string {
-                        return StringEx::stringify($v);
-                    }, $value));
-                });
+                $item = StringEx::stringify($item, fn($value): string => implode(',', array_map(fn($v): string => StringEx::stringify($v), $value)));
                 $xml .= "<value>{$item}</value>";
             }
             return "<values>{$xml}</values>";

@@ -39,9 +39,7 @@ class stringify_Test extends TestCase {
     public function Can_set_default_serializer_without_inheritance() : void {
 
         // arrange
-        ExtendedStringEx::setDefaultSerializer(function() {
-            return 'xyzzy';
-        });
+        ExtendedStringEx::setDefaultSerializer(fn() => 'xyzzy');
 
         // act
         $base = StringEx::stringify(['foo', 'bar']);
@@ -58,12 +56,8 @@ class stringify_Test extends TestCase {
     public function Can_set_different_serializers_between_a_base_class_and_extended_class() : void {
 
         // arrange
-        StringEx::setDefaultSerializer(function() {
-            return 'plugh';
-        });
-        ExtendedStringEx::setDefaultSerializer(function() {
-            return 'xyzzy';
-        });
+        StringEx::setDefaultSerializer(fn() => 'plugh');
+        ExtendedStringEx::setDefaultSerializer(fn() => 'xyzzy');
 
         // act
         $base = StringEx::stringify(['foo', 'bar']);
