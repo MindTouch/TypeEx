@@ -48,7 +48,8 @@ class Dictionary implements IDictionary {
     /**
      * @return mixed - IDictionary can return any value type
      */
-    public function current() {
+    public function current(): mixed
+    {
         return $this->data[$this->key];
     }
 
@@ -63,7 +64,8 @@ class Dictionary implements IDictionary {
     /**
      * @return mixed - IDictionary can return any key type
      */
-    public function key() {
+    public function key(): mixed
+    {
         return $this->key;
     }
 
